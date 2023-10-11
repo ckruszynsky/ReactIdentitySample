@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Register } from "./Register";
 import Login from "./Login";
+import { WeatherPage } from "./WeatherPage";
 
 const Routes = () => {    
     const publicRoutes = [
@@ -28,7 +29,7 @@ const Routes = () => {
         children: [
             {
                 path: "weather",
-                element: <div>Weather</div>
+                element: <WeatherPage />
             },
             {
                 path: "profile",

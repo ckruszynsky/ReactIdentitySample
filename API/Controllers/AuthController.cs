@@ -16,11 +16,13 @@ namespace API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly SignInManager<User> _signInManager;
 
-        public AuthController(UserManager<User> userManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, IConfiguration configuration, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _signInManager = signInManager;
         }
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDto userRegistration)
@@ -43,16 +45,26 @@ namespace API.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AccountLoginRequestModel loginRequest)
-        {
+        {                                  
             var user = await _userManager.FindByNameAsync(loginRequest.UserName);
+            
             if (user != null && await _userManager.CheckPasswordAsync(user, loginRequest.Password))
             {
                 var token = await CreateTokenAsync(user);
                 return Ok(token);
                 
-            }
+            }           
             return Unauthorized();
+            
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
+        }
+
 
         private async Task<string> CreateTokenAsync(User user)
         {

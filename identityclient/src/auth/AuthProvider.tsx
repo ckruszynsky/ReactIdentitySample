@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 interface defaultAuthContextProp {
     token?: string | null;
     setToken?: (newToken: string) => void;
+    clearToken?: () => void;
 }
 
 const AuthContext = createContext<defaultAuthContextProp>({});
@@ -18,6 +19,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setToken_(newToken);
     };
 
+    const clearToken = () => {
+        setToken_(null);
+    };
+
+    
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -31,7 +37,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const contextValue = useMemo(
         () => ({
             token,
-            setToken
+            setToken,
+            clearToken
         }),
         [token]
     );
